@@ -1,0 +1,5 @@
+1、tiny-skia 不支持绘制文本，不支持绘制子图像
+
+2、raqote不支持wasm，绘制子图像有bug
+
+3、plotters : 不支持 绘制 rgba图像

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>hello_slint</title>
+  <style>
+  
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="640" height="480" unselectable="on"></canvas>
+  <script type="module">
+    import init from './pkg/hello_slint.js';
+    init().finally(() => {
+      console.log('初始化成功..');
+    });
+  </script>
+</body>
+
+</html>

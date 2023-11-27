@@ -1,0 +1,16 @@
+[package]
+name = "hello-slint"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+slint = "1.2.2"
+anyhow = "1"
+offscreen-canvas = { path = "../../"}
+
+[target.wasm32-unknown-unknown.dependencies]
+wasm-bindgen = "0.2.87"
+
+# [lib]
+# crate-type = ["cdylib"]
+# path = "src/main.rs"
