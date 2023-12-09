@@ -147,6 +147,10 @@ impl OffscreenCanvas {
         imageproc_ex::draw_hollow_circle_mut(&mut self.canvas, center, radius, color)
     }
 
+    pub fn stroke_line(&mut self, start: (i32, i32), end: (i32, i32), color: Rgba<u8>){
+        imageproc_ex::draw_line_segment_mut(&mut self.canvas, (start.0 as f32, start.1 as f32), (end.0 as f32, end.1 as f32), color)
+    }
+
     pub fn draw_image_with_rotation_at(&mut self, i: &RgbaImage, x: i32, y: i32, r: RotateOption){
         let r = rotate(i, r.center, r.theta, r.interpolation, r.default);
         image::imageops::overlay(&mut self.canvas, &r, x as i64, y as i64);

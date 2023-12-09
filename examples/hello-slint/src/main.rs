@@ -1,5 +1,5 @@
 use anyhow::{anyhow, Ok, Result};
-use offscreen_canvas::{FontSettings, FilterType, WHITE, measure_text, Rect, Font, OffscreenCanvas, load_png};
+use offscreen_canvas::{FontSettings, FilterType, WHITE, measure_text, Rect, Font, OffscreenCanvas, load_png, RED};
 use slint::SharedPixelBuffer;
 
 #[cfg(target_arch = "wasm32")]
@@ -46,6 +46,8 @@ fn main() -> Result<()> {
     let text = "花.png";
     let text_width = measure_text(text, 25., canvas.font()).width() as u32;
     canvas.draw_text(text, WHITE, 25., 150-text_width/2, 270);
+    
+    canvas.stroke_line((0, 0), (canvas.width() as i32, canvas.height() as i32), RED);
 
     let image_data = canvas.image_data();
     let buf = SharedPixelBuffer::clone_from_slice(&image_data, canvas.width(), canvas.height());
