@@ -218,6 +218,22 @@ impl OffscreenCanvas {
         }
     }
 
+    pub fn get_pixel_rgb565(&self, x:u32, y:u32) -> u16{
+        let pixel = self.canvas.get_pixel(x, y);
+        let scale_color_to_565 = |color: u8, bits: u32| -> u16 {
+            let scaled = (color as u16) >> (8 - bits);
+            scaled & ((1 << bits) - 1)
+        };
+        let r = scale_color_to_565(pixel[0], 5);
+        let g = scale_color_to_565(pixel[1], 6);
+        let b = scale_color_to_565(pixel[2], 5);
+        (r << 11) | (g << 5) | b
+    }
+
+    pub fn get_pixel(&self, x:u32, y:u32) -> &Rgba<u8>{
+        self.canvas.get_pixel(x, y)
+    }
+
     pub fn font(&self) -> &Font{
         &self.font
     }
