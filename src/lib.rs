@@ -190,7 +190,7 @@ impl OffscreenCanvas {
         self.draw_image_at(&sub_image, dest.left, dest.top, Some(ResizeOption { nwidth: dest.width() as u32, nheight:dest.height() as u32, filter }), Some(rotate_option))
     }
 
-    pub fn draw_text(&mut self, text: &str, color: Rgba<u8>, px: f32, x: u32, y: u32){
+    pub fn draw_text(&mut self, text: &str, color: Rgba<u8>, px: f32, x: i32, y: i32){
         // 创建文本布局
         let mut layout = Layout::new(CoordinateSystem::PositiveYDown);
         // 设置文本和样式
@@ -207,13 +207,16 @@ impl OffscreenCanvas {
             for (i, value) in bitmap.iter().enumerate() {
                 let dx = (i % m.width) as u32;
                 let dy = (i / m.width) as u32;
-                let sx = x + left as u32 + dx;
-                let sy = y + top as u32 + dy;
+                let sx = x + left as i32 + dx as i32;
+                let sy = y + top as i32 + dy as i32;
+                if sx < 0 || sx >= self.canvas.width() as i32 || sy < 0 || sy >= self.canvas.height() as i32 {
+                    continue;
+                }
                 let mut p = color.clone();
                 p[3] = (p[3] as f32 * (*value as f32 / 255.)) as u8;
-                let mut bottom_pixel = *self.canvas.get_pixel(sx, sy);
+                let mut bottom_pixel = *self.canvas.get_pixel(sx as u32, sy as u32);
                 bottom_pixel.blend(&p);
-                self.canvas.put_pixel(sx, sy, bottom_pixel);
+                self.canvas.put_pixel(sx as u32, sy as u32, bottom_pixel);
             }
         }
     }

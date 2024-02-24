@@ -4,7 +4,7 @@ version = "1.0.0"
 edition = "2021"
 
 [dependencies]
-slint = "1.2.2"
+slint = "1.4.1"
 anyhow = "1"
 offscreen-canvas = { path = "../../"}
 
