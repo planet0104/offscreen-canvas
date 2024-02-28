@@ -221,6 +221,32 @@ impl OffscreenCanvas {
         }
     }
 
+    pub fn draw_text_centered(&mut self, text: &str, color: Rgba<u8>, px: f32, center_x: i32, center_y: i32){
+        let rect = measure_text(text, px, &self.font);
+        let x = center_x - rect.width()/2;
+        let y = center_y - rect.height()/2;
+        self.draw_text(text, color, px, x, y);
+    }
+
+    pub fn measure_text(&self, text: &str, px: f32) -> Rect{
+        let mut rect = Rect::new(0, 0, 0, 0);
+        // 创建文本布局
+        let mut layout = Layout::new(CoordinateSystem::PositiveYDown);
+        // 设置文本和样式
+        layout.append(&[&self.font], &TextStyle::new(text, px, 0));
+        // 获取渲染的字形信息
+        let glyphs_pos = layout.glyphs();
+        for (i, pos) in glyphs_pos.iter().enumerate(){
+            if pos.height as i32 > rect.bottom{
+                rect.bottom = pos.height as i32;
+            }
+            if i == glyphs_pos.len()-1{
+                rect.right = pos.x as i32 + pos.width as i32;
+            }
+        }
+        rect
+    }
+
     pub fn get_pixel_rgb565(&self, x:u32, y:u32) -> u16{
         let pixel = self.canvas.get_pixel(x, y);
         let scale_color_to_565 = |color: u8, bits: u32| -> u16 {
@@ -260,50 +286,16 @@ impl OffscreenCanvas {
 
 #[cfg(test)]
 mod tests {
-    use fontdue::{FontSettings, Font, layout::{TextStyle, Layout, CoordinateSystem}};
-    use image::{Rgba, RgbaImage, Pixel};
+    use fontdue::{FontSettings, Font};
+
+    use crate::{OffscreenCanvas, WHITE};
 
     #[test]
     fn test1(){
-
         let font_bytes:&[u8] = include_bytes!("../examples/hello-slint/VonwaonBitmap-16px.ttf");
         let font = Font::from_bytes(font_bytes, FontSettings::default()).unwrap();
-        // 设置文本和样式
-        let text = "你好吗";
-        let size = 16.0;
-        let red = Rgba([255,0,0,255]);
-        let text_pos_x = 150;
-        let text_pos_y = 150;
-        let mut source = RgbaImage::new(300, 300);
-
-        // 创建文本布局
-        let mut layout = Layout::new(CoordinateSystem::PositiveYDown);
-
-        // 设置文本和样式
-        layout.append(&[&font], &TextStyle::new(text, size, 0));
-
-        // 获取渲染的字形信息
-        let glyphs_pos = layout.glyphs();
-        let glyphs: Vec<_> = text.chars().map(|c| font.rasterize(c, size)).collect();
-
-        // 遍历每个字形并渲染位图
-        for (glyph, (m, bitmap)) in glyphs_pos.iter().zip(glyphs) {
-            let left = glyph.x;
-            let top = glyph.y;
-            //遍历字形的每一个像素
-            for (i, value) in bitmap.iter().enumerate() {
-                let dx = (i % m.width) as u32;
-                let dy = (i / m.width) as u32;
-                let sx = text_pos_x + left as u32 + dx;
-                let sy = text_pos_y + top as u32 + dy;
-                let mut p = red.clone();
-                p[3] = (p[3] as f32 * (*value as f32 / 255.)) as u8;
-                let mut bottom_pixel = *source.get_pixel(sx, sy);
-                bottom_pixel.blend(&p);
-                source.put_pixel(sx, sy, bottom_pixel);
-            }
-        }
-
-        source.save("test.png").unwrap();
+        let mut canvas = OffscreenCanvas::new(200, 200, font);
+        canvas.draw_text_centered("你好!", WHITE, 14., canvas.width() as i32/2, canvas.height() as i32/2);
+        canvas.canvas.save("out.png").unwrap();
     }
 }
