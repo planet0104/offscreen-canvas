@@ -65,6 +65,36 @@ impl Rect {
     pub fn contain(&self, x:i32, y:i32) -> bool {
         x >= self.left && x <= self.right && y >= self.top && y <= self.bottom
     }
+
+    pub fn center(&self) -> (i32, i32){
+        ((self.right-self.left)/2, (self.bottom-self.top)/2)
+    }
+    
+    pub fn scale_by(&self, ratio: f32) -> Self {
+        let scaled_width = (self.width() as f32 * ratio) as i32;
+        let scaled_height = (self.height() as f32 * ratio) as i32;
+        
+        let center_x = self.center().0;
+        let center_y = self.center().1;
+
+        let new_left = center_x - (scaled_width / 2);
+        let new_top = center_y - (scaled_height / 2);
+        let new_right = center_x + (scaled_width / 2);
+        let new_bottom = center_y + (scaled_height / 2);
+
+        Self {
+            left: new_left,
+            top: new_top,
+            right: new_right,
+            bottom: new_bottom,
+        }
+    }
+
+    pub fn move_to(&mut self, x: i32, y: i32) {
+        let dx = x - self.left;
+        let dy = y - self.top;
+        self.offset(dx, dy);
+    }
 }
 
 pub struct RotateOption{
