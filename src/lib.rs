@@ -47,7 +47,7 @@ impl Rect {
         self.bottom - self.top
     }
 
-    /** 修改rect大小 */
+    /** 扩大 */
     pub fn inflate(&mut self, dx:i32, dy:i32) {
         self.left -= dx;
         self.right += dx;
@@ -55,7 +55,15 @@ impl Rect {
         self.bottom += dy;
     }
 
-    pub fn offset(&mut self, dx:i32, dy:i32) {
+    pub fn deflate(&mut self, dx: i32, dy: i32) {
+        self.left += dx;
+        self.right -= dx;
+        self.top += dy;
+        self.bottom -= dy;
+    }
+
+    // 平移矩形
+    pub fn offset(&mut self, dx: i32, dy: i32) {
         self.left += dx;
         self.right += dx;
         self.top += dy;
@@ -67,33 +75,27 @@ impl Rect {
     }
 
     pub fn center(&self) -> (i32, i32){
-        ((self.right-self.left)/2, (self.bottom-self.top)/2)
-    }
-    
-    pub fn scale_by(&self, ratio: f32) -> Self {
-        let scaled_width = (self.width() as f32 * ratio) as i32;
-        let scaled_height = (self.height() as f32 * ratio) as i32;
-        
-        let center_x = self.center().0;
-        let center_y = self.center().1;
-
-        let new_left = center_x - (scaled_width / 2);
-        let new_top = center_y - (scaled_height / 2);
-        let new_right = center_x + (scaled_width / 2);
-        let new_bottom = center_y + (scaled_height / 2);
-
-        Self {
-            left: new_left,
-            top: new_top,
-            right: new_right,
-            bottom: new_bottom,
-        }
+        (self.left+self.width()/2, self.top+self.height()/2)
     }
 
-    pub fn move_to(&mut self, x: i32, y: i32) {
-        let dx = x - self.left;
-        let dy = y - self.top;
-        self.offset(dx, dy);
+    // 设置矩形中心点
+    pub fn set_center(&mut self, center_x: i32, center_y: i32) {
+        let width = (self.right - self.left) / 2;
+        let height = (self.bottom - self.top) / 2;
+        self.left = center_x - width;
+        self.right = center_x + width;
+        self.top = center_y - height;
+        self.bottom = center_y + height;
+    }
+
+    // 设置矩形左上角位置
+    pub fn set_position(&mut self, left: i32, top: i32) {
+        let width = self.right - self.left;
+        let height = self.bottom - self.top;
+        self.left = left;
+        self.right = left + width;
+        self.top = top;
+        self.bottom = top + height;
     }
 }
 
@@ -327,5 +329,22 @@ mod tests {
         let mut canvas = OffscreenCanvas::new(200, 200, font);
         canvas.draw_text_centered("你好!", WHITE, 14., canvas.width() as i32/2, canvas.height() as i32/2);
         canvas.canvas.save("out.png").unwrap();
+    }
+
+    #[test]
+    fn test2(){
+        use crate::Rect;
+        let mut rect = Rect::from(0, 0, 100, 100);
+        println!("{:?}", rect);
+        println!("center:{:?}", rect.center());
+        rect.deflate(20, 20);
+        println!("{:?}", rect);
+        println!("center:{:?}", rect.center());
+        rect.inflate(50, 50);
+        println!("{:?}", rect);
+        println!("center:{:?}", rect.center());
+        rect.set_center(0, 0);
+        println!("{:?}", rect);
+        println!("center:{:?}", rect.center());
     }
 }
