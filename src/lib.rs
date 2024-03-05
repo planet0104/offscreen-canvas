@@ -97,6 +97,16 @@ impl Rect {
         self.top = top;
         self.bottom = top + height;
     }
+
+    // 设置矩形的尺寸（宽高）
+    pub fn set_size(&mut self, width: i32, height: i32) {
+        let center_x = (self.left + self.right) / 2;
+        let center_y = (self.top + self.bottom) / 2;
+        self.left = center_x - width / 2;
+        self.right = center_x + width / 2;
+        self.top = center_y - height / 2;
+        self.bottom = center_y + height / 2;
+    }
 }
 
 pub struct RotateOption{
@@ -344,6 +354,9 @@ mod tests {
         println!("{:?}", rect);
         println!("center:{:?}", rect.center());
         rect.set_center(0, 0);
+        println!("{:?}", rect);
+        println!("center:{:?}", rect.center());
+        rect.set_size(100, 100);
         println!("{:?}", rect);
         println!("center:{:?}", rect.center());
     }
