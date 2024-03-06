@@ -1,10 +1,10 @@
 [package]
 name = "offscreen-canvas"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2021"
 
 [dependencies]
 anyhow = "1"
-image = { version = "0.24.9", default-features = false, features = ["png"]}
+image = { version = "0.24.8", default-features = false, features = ["png"]}
 imageproc = { version = "0.23.0", default-features = false}
 fontdue = "0.8"

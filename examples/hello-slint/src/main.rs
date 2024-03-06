@@ -1,5 +1,6 @@
 use anyhow::{anyhow, Ok, Result};
-use offscreen_canvas::{FontSettings, FilterType, WHITE, measure_text, Rect, Font, OffscreenCanvas, load_png, RED};
+use image::imageops::FilterType;
+use offscreen_canvas::{FontSettings, WHITE, measure_text, Rect, Font, OffscreenCanvas, load_png, RED};
 use slint::SharedPixelBuffer;
 
 #[cfg(target_arch = "wasm32")]

@@ -1,9 +1,8 @@
 use fontdue::layout::{CoordinateSystem, Layout, TextStyle};
-use image::{imageops::{resize, crop_imm}, Pixel, ImageError};
-use imageproc::geometric_transformations::rotate;
+use image::{imageops::{crop_imm, resize, FilterType}, ImageError, Pixel, Rgba};
+use imageproc::geometric_transformations::{rotate, Interpolation};
+use image::RgbaImage;
 pub use fontdue::{Font, FontSettings};
-pub use imageproc::geometric_transformations::Interpolation;
-pub use image::{ Rgba, RgbaImage, imageops::FilterType };
 mod imageproc_ex;
 pub const WHITE:Rgba<u8> = Rgba([255, 255, 255, 255]);
 pub const BLACK:Rgba<u8> = Rgba([0, 0, 0, 255]);
@@ -17,7 +16,7 @@ pub struct Rect {
     pub left: i32,
     pub top: i32,
     pub right: i32,
-    pub bottom: i32,
+    pub bottom: i32
 }
 
 impl Rect {
